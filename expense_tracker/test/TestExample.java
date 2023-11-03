@@ -38,6 +38,14 @@ public class TestExample {
         return totalCost;
     }
 
+    public double getTotalCostFromView() {
+        int totalSumIdx = view.getTransactionsTable().getRowCount();
+        int colIdx = view.getTransactionsTable().getColumnCount();
+        Object obj = view.getTransactionsTable().getValueAt(totalSumIdx - 1, colIdx - 1);
+        double totalCost = (double) obj;
+        return totalCost;
+    }
+
     public void checkTransaction(double amount, String category, Transaction transaction) {
         assertEquals(amount, transaction.getAmount(), 0.01);
         assertEquals(category, transaction.getCategory());
@@ -153,6 +161,7 @@ public class TestExample {
 
         // Assert that the total cost is zero
         assertEquals(0, getTotalCost(), 0.01);
+        assertEquals(0, getTotalCostFromView(), 0.01);
         // Assert that the list has length zero
         assertEquals(0, model.getTransactions().size());
     }
