@@ -109,4 +109,46 @@ public class TestExample {
         assertEquals(0.00, totalCost, 0.01);
     }
 
+    @Test
+    public void testUndoDisallowed() {
+        // Undo transaction when transaction list is empty
+
+        // Pre-condition: List of transactions is empty
+        assertEquals(0, model.getTransactions().size());
+
+        // Perform the action: trigger action listener
+        try {
+            controller.removeTransactionByIndex(new int[0]);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+
+    }
+
+    @Test
+    public void testUndoAllowed() {
+        // Pre-condition: List of transactions is empty
+        assertEquals(0, model.getTransactions().size());
+
+        // Add transaction
+        double amount = 50.0;
+        String category = "food";
+        controller.addTransaction(amount, category);
+
+        // Pre-condition: List is updated correctly
+        assertEquals(1, model.getTransactions().size());
+        Transaction firstTransaction = model.getTransactions().get(0);
+        checkTransaction(amount, category, firstTransaction);
+
+        assertEquals(amount, getTotalCost(), 0.01);
+
+        // Perform the action: remove the transaction
+        controller.removeTransactionByIndex(new int[] { 0 });
+
+        // Assert that the total cost is zero
+        assertEquals(0, getTotalCost(), 0.01);
+        // Assert that the list has length zero
+        assertEquals(0, model.getTransactions().size());
+    }
+
 }
