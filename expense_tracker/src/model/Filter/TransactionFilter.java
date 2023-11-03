@@ -7,7 +7,8 @@ import model.Transaction;
 /**
  * The TransactionFilter supports filtering the transaction list.
  *
- * NOTE) The Strategy design pattern is being applied. This is the Strategy interface.
+ * NOTE) The Strategy design pattern is being applied. This is the Strategy
+ * interface.
  */
 public interface TransactionFilter {
 

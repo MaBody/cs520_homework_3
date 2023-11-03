@@ -9,8 +9,8 @@ import java.util.List;
 public class Transaction {
 
   public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-    
-  //final means that the variable cannot be changed
+
+  // final means that the variable cannot be changed
   private final double amount;
   private final String category;
   private final String timestamp;
@@ -19,12 +19,12 @@ public class Transaction {
     // Since this is a public constructor, perform input validation
     // to guarantee that the amount and category are both valid
     if (InputValidation.isValidAmount(amount) == false) {
-	throw new IllegalArgumentException("The amount is not valid.");
+      throw new IllegalArgumentException("The amount is not valid.");
     }
     if (InputValidation.isValidCategory(category) == false) {
-	throw new IllegalArgumentException("The category is not valid.");
+      throw new IllegalArgumentException("The category is not valid.");
     }
-      
+
     this.amount = amount;
     this.category = category;
     this.timestamp = generateTimestamp();
@@ -34,9 +34,9 @@ public class Transaction {
     return amount;
   }
 
-  //setter method is removed because we want to make the Transaction immutable
+  // setter method is removed because we want to make the Transaction immutable
   // public void setAmount(double amount) {
-  //   this.amount = amount;
+  // this.amount = amount;
   // }
 
   public String getCategory() {
@@ -44,15 +44,16 @@ public class Transaction {
   }
 
   // public void setCategory(String category) {
-  //   this.category = category; 
+  // this.category = category;
   // }
-  
+
   public String getTimestamp() {
     return timestamp;
   }
-  //private helper method to generate timestamp
+
+  // private helper method to generate timestamp
   private String generateTimestamp() {
-     return dateFormatter.format(new Date());
+    return dateFormatter.format(new Date());
   }
 
 }
