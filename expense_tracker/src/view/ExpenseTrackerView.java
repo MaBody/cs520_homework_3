@@ -141,6 +141,10 @@ public class ExpenseTrackerView extends JFrame {
     amountFilterBtn.addActionListener(listener);
   }
 
+  public JButton getUndoBtn() {
+    return undoBtn;
+  }
+
   public double getAmountFilterInput() {
     String input = JOptionPane.showInputDialog(this, "Enter Amount Filter:");
     try {
