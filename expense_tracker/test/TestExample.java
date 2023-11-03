@@ -109,6 +109,9 @@ public class TestExample {
         assertEquals(0.00, totalCost, 0.01);
     }
 
+    /**
+     * Test case 5.
+     */
     @Test
     public void testUndoDisallowed() {
         // Undo transaction when transaction list is empty
@@ -125,6 +128,9 @@ public class TestExample {
 
     }
 
+    /**
+     * Test case 6.
+     */
     @Test
     public void testUndoAllowed() {
         // Pre-condition: List of transactions is empty
