@@ -71,9 +71,8 @@ public class ExpenseTrackerApp {
     });
 
     view.addUndoListener(e -> {
-      int selectedRow = view.getTransactionsTable().getSelectedRow();
-
-      controller.removeTransactionByIndex(selectedRow);
+      int[] selectedRows = view.getTransactionsTable().getSelectedRows();
+      controller.removeTransactionByIndex(selectedRows);
     });
   }
 }

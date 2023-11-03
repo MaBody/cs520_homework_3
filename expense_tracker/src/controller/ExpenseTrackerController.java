@@ -52,13 +52,16 @@ public class ExpenseTrackerController {
     return true;
   }
 
-  public boolean removeTransactionByIndex(int row) {
-    if (row < 0 || row >= model.getTransactions().size() - 1) {
-      JOptionPane.showMessageDialog(view, "Invalid row selected.");
+  public boolean removeTransactionByIndex(int[] rows) {
+    if (rows.length != 1 || rows[0] >= model.getTransactions().size() - 1) {
+      JOptionPane.showMessageDialog(view, "Invalid row selection.");
+      return false;
+    } else {
+      Transaction t = model.getTransactions().get(rows[0]);
+      model.removeTransaction(t);
+      refresh();
+      return true;
     }
-    model.getTransactions().remove(row);
-    refresh();
-    return true;
   }
 
   public void applyFilter() {
