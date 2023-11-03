@@ -52,6 +52,15 @@ public class ExpenseTrackerController {
     return true;
   }
 
+  public boolean removeTransactionByIndex(int row) {
+    if (row < 0 || row >= model.getTransactions().size() - 1) {
+      JOptionPane.showMessageDialog(view, "Invalid row selected.");
+    }
+    model.getTransactions().remove(row);
+    refresh();
+    return true;
+  }
+
   public void applyFilter() {
     // null check for filter
     if (filter != null) {
