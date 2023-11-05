@@ -1,6 +1,7 @@
 
 // package test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -115,6 +116,72 @@ public class TestExample {
         // Check the total cost after removing the transaction
         double totalCost = getTotalCost();
         assertEquals(0.00, totalCost, 0.01);
+    }
+
+    public Transaction getTransactionFromView(int index) {
+        double amount = (double) view.getTransactionsTable().getValueAt(index, 1);
+        String category = (String) view.getTransactionsTable().getValueAt(index, 2);
+        Transaction t = new Transaction(amount, category);
+        return t;
+    }
+
+    /**
+     * Test case 1.
+     */
+    @Test
+    public void testAddTransactionGUI() {
+        // Pre-condition: List of transactions is empty
+        assertEquals(0, model.getTransactions().size());
+
+        // Perform the action: Add a transaction
+        double amount = 50.0;
+        String category = "food";
+        assertTrue(controller.addTransaction(amount, category));
+
+        // Post-condition: List of transactions contains only
+        // the added transaction
+        assertEquals(1, model.getTransactions().size());
+
+        // Check the contents of the JTable UI element
+        Transaction firstTransaction = getTransactionFromView(0);
+        checkTransaction(amount, category, firstTransaction);
+
+        // Check the total amount
+        assertEquals(amount, getTotalCost(), 0.01);
+        assertEquals(amount, getTotalCostFromView(), 0.01);
+    }
+
+    /**
+     * Test case 2.
+     */
+    @Test
+    public void testAddInvalidTransactionGUI() {
+        // Pre-condition: List of transactions is empty
+        assertEquals(0, model.getTransactions().size());
+
+        // Add a transaction
+        double amount = 50.0;
+        String category = "food";
+        assertTrue(controller.addTransaction(amount, category));
+
+        double amountInvalid = 0.0;
+        String categoryInvalid = "foood";
+
+        // Perform the action: Attempt to add invalid inputs
+        assertFalse(controller.addTransaction(amountInvalid, category));
+        assertFalse(controller.addTransaction(amount, categoryInvalid));
+
+        // Check that no transaction is added (size = 2, transaction + total amount)
+        int tableSize = view.getTransactionsTable().getRowCount();
+        assertEquals(tableSize, 2);
+
+        // Check that existing transaction is unaffected
+        Transaction firstTransaction = getTransactionFromView(0);
+        checkTransaction(amount, category, firstTransaction);
+
+        // Check the total amount
+        assertEquals(amount, getTotalCost(), 0.01);
+        assertEquals(amount, getTotalCostFromView(), 0.01);
     }
 
     /**
