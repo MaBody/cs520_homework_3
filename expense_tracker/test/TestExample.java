@@ -47,6 +47,13 @@ public class TestExample {
         return totalCost;
     }
 
+    public Transaction getTransactionFromView(int index) {
+        double amount = (double) view.getTransactionsTable().getValueAt(index, 1);
+        String category = (String) view.getTransactionsTable().getValueAt(index, 2);
+        Transaction t = new Transaction(amount, category);
+        return t;
+    }
+
     public void checkTransaction(double amount, String category, Transaction transaction) {
         assertEquals(amount, transaction.getAmount(), 0.01);
         assertEquals(category, transaction.getCategory());
@@ -118,13 +125,6 @@ public class TestExample {
         assertEquals(0.00, totalCost, 0.01);
     }
 
-    public Transaction getTransactionFromView(int index) {
-        double amount = (double) view.getTransactionsTable().getValueAt(index, 1);
-        String category = (String) view.getTransactionsTable().getValueAt(index, 2);
-        Transaction t = new Transaction(amount, category);
-        return t;
-    }
-
     /**
      * Test case 1.
      */
@@ -138,15 +138,19 @@ public class TestExample {
         String category = "food";
         assertTrue(controller.addTransaction(amount, category));
 
-        // Post-condition: List of transactions contains only
-        // the added transaction
+        // Post-condition: Model and view contain only one transaction
         assertEquals(1, model.getTransactions().size());
+        int tableSize = view.getTransactionsTable().getRowCount();
+        // Table contains one additional row for total cost
+        assertEquals(tableSize, 2);
 
-        // Check the contents of the JTable UI element
-        Transaction firstTransaction = getTransactionFromView(0);
-        checkTransaction(amount, category, firstTransaction);
+        // Post-condition: Added transaction is correct in view and model
+        Transaction firstTransactionView = getTransactionFromView(0);
+        Transaction firstTransactionModel = model.getTransactions().get(0);
+        checkTransaction(amount, category, firstTransactionView);
+        checkTransaction(amount, category, firstTransactionModel);
 
-        // Check the total amount
+        // Post-condition: Total cost is correct in view and model
         assertEquals(amount, getTotalCost(), 0.01);
         assertEquals(amount, getTotalCostFromView(), 0.01);
     }
@@ -171,15 +175,19 @@ public class TestExample {
         assertFalse(controller.addTransaction(amountInvalid, category));
         assertFalse(controller.addTransaction(amount, categoryInvalid));
 
-        // Check that no transaction is added (size = 2, transaction + total amount)
+        // Post-condition: Model and view contain only one transaction
+        assertEquals(1, model.getTransactions().size());
         int tableSize = view.getTransactionsTable().getRowCount();
+        // Table contains one additional row for total cost
         assertEquals(tableSize, 2);
 
-        // Check that existing transaction is unaffected
-        Transaction firstTransaction = getTransactionFromView(0);
-        checkTransaction(amount, category, firstTransaction);
+        // Post-condition: Existing transaction is unaffected in view and model
+        Transaction firstTransactionView = getTransactionFromView(0);
+        Transaction firstTransactionModel = model.getTransactions().get(0);
+        checkTransaction(amount, category, firstTransactionView);
+        checkTransaction(amount, category, firstTransactionModel);
 
-        // Check the total amount
+        // Post-condition: Total cost is unaffected in view and model
         assertEquals(amount, getTotalCost(), 0.01);
         assertEquals(amount, getTotalCostFromView(), 0.01);
     }
@@ -194,13 +202,20 @@ public class TestExample {
         // Pre-condition: List of transactions is empty
         assertEquals(0, model.getTransactions().size());
 
-        // Perform the action: trigger action listener
+        // Perform the action: try to remove a non-existing transaction
+        // Index zero in this scenario corresponds to the row for the total sum
+        int[] invalidIndex = new int[] { 0 };
         try {
-            controller.removeTransactionByIndex(new int[0]);
+            controller.removeTransactionByIndex(invalidIndex);
         } catch (Exception e) {
             assertTrue(e instanceof IllegalArgumentException);
         }
 
+        // Post-condition: Model and view contain no transactions
+        assertEquals(0, model.getTransactions().size());
+        int tableSize = view.getTransactionsTable().getRowCount();
+        // Table does not contain total cost field yet
+        assertEquals(tableSize, 0);
     }
 
     /**
@@ -216,21 +231,26 @@ public class TestExample {
         String category = "food";
         controller.addTransaction(amount, category);
 
-        // Pre-condition: List is updated correctly
+        // Pre-condition: Transaction in view is updated correctly
         assertEquals(1, model.getTransactions().size());
-        Transaction firstTransaction = model.getTransactions().get(0);
+        Transaction firstTransaction = getTransactionFromView(0);
         checkTransaction(amount, category, firstTransaction);
-
+        // Pre-condition: Total cost in view is updated correctly
         assertEquals(amount, getTotalCost(), 0.01);
 
         // Perform the action: remove the transaction
-        controller.removeTransactionByIndex(new int[] { 0 });
+        int[] validIndex = new int[] { 0 };
+        controller.removeTransactionByIndex(validIndex);
 
-        // Assert that the total cost is zero
+        // Post-condition: Model and view contain no transactions
+        assertEquals(0, model.getTransactions().size());
+        int tableSize = view.getTransactionsTable().getRowCount();
+        // Table contains one additional row for total cost
+        assertEquals(tableSize, 1);
+
+        // Post-condition: Total cost is now zero in view and model
         assertEquals(0, getTotalCost(), 0.01);
         assertEquals(0, getTotalCostFromView(), 0.01);
-        // Assert that the list has length zero
-        assertEquals(0, model.getTransactions().size());
     }
 
 }

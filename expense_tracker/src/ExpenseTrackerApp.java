@@ -16,10 +16,10 @@ public class ExpenseTrackerApp {
     ExpenseTrackerModel model = new ExpenseTrackerModel();
     ExpenseTrackerView view = new ExpenseTrackerView();
     ExpenseTrackerController controller = new ExpenseTrackerController(model, view);
-    controller.addTransaction(1, "food");
-    controller.addTransaction(2, "travel");
-    controller.addTransaction(3, "bills");
-    controller.addTransaction(4, "bills");
+    // controller.addTransaction(1, "food");
+    // controller.addTransaction(2, "travel");
+    // controller.addTransaction(3, "bills");
+    // controller.addTransaction(4, "bills");
 
     // Initialize view
     view.setVisible(true);

@@ -55,7 +55,7 @@ public class ExpenseTrackerController {
   public boolean removeTransactionByIndex(int[] rows) {
     if (rows.length != 1 || rows[0] >= model.getTransactions().size()) {
       JOptionPane.showMessageDialog(view, "Invalid row selection.");
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("Invalid row selection.");
     } else {
       Transaction t = model.getTransactions().get(rows[0]);
       model.removeTransaction(t);
