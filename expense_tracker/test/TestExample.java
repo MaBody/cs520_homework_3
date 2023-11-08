@@ -10,6 +10,8 @@ import java.util.List;
 import java.text.ParseException;
 
 import org.junit.Before;
+import org.junit.After;
+
 import org.junit.Test;
 
 import controller.ExpenseTrackerController;
@@ -217,9 +219,6 @@ public class TestExample {
         AmountFilter filter = new AmountFilter(50);
         List<Transaction> filteredTransactions = filter.filter(model.getTransactions());
 
-        // List<Transaction> filteredTransactions =
-        // controller.applyFilter().filteredTransactions();
-        //
         // Check that the transactions returned are Transaction 1 and 2
         checkTransaction(50, "food", filteredTransactions.get(0));
         checkTransaction(50, "travel", filteredTransactions.get(1));
@@ -398,6 +397,13 @@ public class TestExample {
         // Post-condition: Total cost is now zero in view and model
         assertEquals(0, getTotalCost(), 0.01);
         assertEquals(0, getTotalCostFromView(), 0.01);
+    }
+
+    @After
+    public void cleanup() {
+        model = new ExpenseTrackerModel();
+        view = new ExpenseTrackerView();
+        controller = new ExpenseTrackerController(model, view);
     }
 
 }
