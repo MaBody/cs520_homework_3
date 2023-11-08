@@ -15,6 +15,8 @@ import org.junit.Test;
 import controller.ExpenseTrackerController;
 import model.ExpenseTrackerModel;
 import model.Transaction;
+import model.Filter.AmountFilter;
+import model.Filter.CategoryFilter;
 import view.ExpenseTrackerView;
 
 public class TestExample {
@@ -190,6 +192,151 @@ public class TestExample {
         // Post-condition: Total cost is unaffected in view and model
         assertEquals(amount, getTotalCost(), 0.01);
         assertEquals(amount, getTotalCostFromView(), 0.01);
+    }
+
+    /**
+     * Test case 3.
+     */
+    @Test
+    public void testFilterAmountGUI() {
+        // Pre-condition: List of transactions is empty
+        assertEquals(0, model.getTransactions().size());
+
+        // Add a transaction
+        double amount1 = 50.0;
+        String category1 = "food";
+        double amount2 = 30.0;
+        String category2 = "travel";
+
+        assertTrue(controller.addTransaction(amount1, category1));
+        assertTrue(controller.addTransaction(amount1, category2));
+        assertTrue(controller.addTransaction(amount2, category1));
+        assertTrue(controller.addTransaction(amount2, category2));
+
+        // Perform the action: Apply the filter by amount
+        AmountFilter filter = new AmountFilter(50);
+        List<Transaction> filteredTransactions = filter.filter(model.getTransactions());
+
+        // List<Transaction> filteredTransactions =
+        // controller.applyFilter().filteredTransactions();
+        //
+        // Check that the transactions returned are Transaction 1 and 2
+        checkTransaction(50, "food", filteredTransactions.get(0));
+        checkTransaction(50, "travel", filteredTransactions.get(1));
+
+        // Perform the action: Filter by amount when amount is invalid. Check
+        // that Exception is thrown
+        try {
+            AmountFilter filterInvalid = new AmountFilter(-2);
+            List<Transaction> filteredTransactionsInvalid = filterInvalid.filter(model.getTransactions());
+            checkTransaction(50, "food", filteredTransactionsInvalid.get(0));
+
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+
+        // Perform the action: Filter by amount returning null string
+        AmountFilter filterEmpty = new AmountFilter(10);
+        List<Transaction> filteredTransactionsEmpty = filterEmpty.filter(model.getTransactions());
+
+        // Check that filtered Transactions is empty:
+        assertEquals(filteredTransactionsEmpty.size(), 0);
+
+        // Post-condition: Model and view contain four transaction
+        assertEquals(4, model.getTransactions().size());
+        int tableSize = view.getTransactionsTable().getRowCount();
+
+        // Post-condition: Table contains one additional row for total cost
+        assertEquals(5, tableSize);
+
+        // Post-condition: Total cost is unaffected in view and model
+        assertEquals(160, getTotalCost(), 0.01);
+        assertEquals(160, getTotalCostFromView(), 0.01);
+
+        // Post-condition: Existing transactions in unaffected in view and model
+        checkTransaction(50, "food", getTransactionFromView(0));
+        checkTransaction(50, "food", model.getTransactions().get(0));
+
+        checkTransaction(50, "travel", getTransactionFromView(1));
+        checkTransaction(50, "travel", model.getTransactions().get(1));
+
+        checkTransaction(30, "food", getTransactionFromView(2));
+        checkTransaction(30, "food", model.getTransactions().get(2));
+
+        checkTransaction(30, "travel", getTransactionFromView(3));
+        checkTransaction(30, "travel", model.getTransactions().get(3));
+
+    }
+
+    /**
+     * Test case 4.
+     */
+    @Test
+    public void testFilterCategoryGUI() {
+        // Pre-condition: List of transactions is empty
+        assertEquals(0, model.getTransactions().size());
+
+        // Add a transaction
+        double amount1 = 50.0;
+        String category1 = "food";
+        double amount2 = 30.0;
+        String category2 = "travel";
+
+        assertTrue(controller.addTransaction(amount1, category1));
+        assertTrue(controller.addTransaction(amount1, category2));
+        assertTrue(controller.addTransaction(amount2, category1));
+        assertTrue(controller.addTransaction(amount2, category2));
+
+        // Perform the action: Apply the filter by category
+        CategoryFilter filter = new CategoryFilter("food");
+        List<Transaction> filteredTransactions = filter.filter(model.getTransactions());
+
+        // Check that the transactions returned are Transaction 1 and 2
+        checkTransaction(50, "food", filteredTransactions.get(0));
+        checkTransaction(30, "food", filteredTransactions.get(1));
+
+        // Perform the action: Apply the filter by Category when category is invalid.
+        // Check that Exception is
+        // thrown
+        try {
+            CategoryFilter filterInvalid = new CategoryFilter("x");
+            List<Transaction> filteredTransactionsInvalid = filterInvalid.filter(model.getTransactions());
+            checkTransaction(50, "food", filteredTransactionsInvalid.get(0));
+
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+        // Perform the action: Filter by category returning null string
+        CategoryFilter filterEmpty = new CategoryFilter("other");
+        List<Transaction> filteredTransactionsEmpty = filterEmpty.filter(model.getTransactions());
+
+        // Check that filtered Transactions is empty:
+        assertEquals(filteredTransactionsEmpty.size(), 0);
+
+        // Post-condition: Model and view contain four transaction
+        assertEquals(4, model.getTransactions().size());
+        int tableSize = view.getTransactionsTable().getRowCount();
+
+        // Post-condition: Table contains one additional row for total cost
+        assertEquals(5, tableSize);
+
+        // Post-condition: Total cost is unaffected in view and model
+        assertEquals(160, getTotalCost(), 0.01);
+        assertEquals(160, getTotalCostFromView(), 0.01);
+
+        // Post-condition: Existing transactions in unaffected in view and model
+        checkTransaction(50, "food", getTransactionFromView(0));
+        checkTransaction(50, "food", model.getTransactions().get(0));
+
+        checkTransaction(50, "travel", getTransactionFromView(1));
+        checkTransaction(50, "travel", model.getTransactions().get(1));
+
+        checkTransaction(30, "food", getTransactionFromView(2));
+        checkTransaction(30, "food", model.getTransactions().get(2));
+
+        checkTransaction(30, "travel", getTransactionFromView(3));
+        checkTransaction(30, "travel", model.getTransactions().get(3));
+
     }
 
     /**
