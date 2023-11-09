@@ -72,7 +72,12 @@ public class ExpenseTrackerApp {
 
     view.addUndoListener(e -> {
       int[] selectedRows = view.getTransactionsTable().getSelectedRows();
-      controller.removeTransactionByIndex(selectedRows);
+      try {
+        controller.removeTransactionByIndex(selectedRows);
+      } catch (IllegalArgumentException exception) {
+        JOptionPane.showMessageDialog(view, exception.getMessage());
+        view.toFront();
+      }
     });
   }
 }
