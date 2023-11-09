@@ -1,6 +1,7 @@
 package view;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -61,6 +62,7 @@ public class ExpenseTrackerView extends JFrame {
     amountFilterBtn = new JButton("Filter by Amount");
 
     undoBtn = new JButton("Undo");
+    undoBtn.setEnabled(false);
 
     // Layout components
     JPanel inputPanel = new JPanel();
@@ -136,8 +138,17 @@ public class ExpenseTrackerView extends JFrame {
     undoBtn.addActionListener(listener);
   }
 
+  public void addUndoAllowedListener(ListSelectionListener listener) {
+    ListSelectionModel cellSelectionModel = transactionsTable.getSelectionModel();
+    cellSelectionModel.addListSelectionListener(listener);
+  }
+
   public JButton getUndoBtn() {
     return undoBtn;
+  }
+
+  public void setUndoBtn(boolean ans) {
+    undoBtn.setEnabled(ans);
   }
 
   public double getAmountFilterInput() {

@@ -69,6 +69,14 @@ public class ExpenseTrackerApp {
         view.toFront();
       }
     });
+    view.addUndoAllowedListener(e -> {
+      int[] selectedRows = view.getTransactionsTable().getSelectedRows();
+      if (selectedRows.length != 1 || selectedRows[0] >= model.getTransactions().size()) {
+        view.setUndoBtn(false);
+      } else {
+        view.setUndoBtn(true);
+      }
+    });
 
     view.addUndoListener(e -> {
       int[] selectedRows = view.getTransactionsTable().getSelectedRows();
